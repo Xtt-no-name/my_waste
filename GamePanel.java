@@ -2,7 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.net.URI;
 import java.net.URL;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener {
     private Snake snake;
@@ -49,14 +52,11 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    private void loadImages(){
+    private void loadSnackImages(){
         URL head_url = getClass().getResource("/resources/head.png");
         ImageIcon headImg = new ImageIcon(head_url);
         headImage = headImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
-        URL food_url = getClass().getResource("/resources/food.png");
-        ImageIcon foodImg = new ImageIcon(food_url);
-        foodImage = foodImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
         // 检查图片是否加载
         if (headImage == null || headImg.getImageLoadStatus() != MediaTracker.COMPLETE) {
@@ -69,6 +69,45 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+    public void loadFoodImage(){
+        try {
+            URL foodDir_url = getClass().getResource("/resources/food");
+
+            if (foodDir_url != null) {
+                URI food_uri = foodDir_url.toURI();
+
+                File food_file = new File(food_uri);
+
+                String[] foodName_list = food_file.list((dir, name) ->
+                        name.toLowerCase().endsWith(".png")
+                );
+
+                Random chooser = new Random();
+                int food_index = chooser.nextInt(foodName_list.length);
+                URL food_url = getClass().getResource("/resources/food/" + foodName_list[food_index]);
+                ImageIcon foodImg = new ImageIcon(food_url);
+                foodImage = foodImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
+
+                // 检查图片是否加载
+                if (foodImage == null || foodImg.getImageLoadStatus() != MediaTracker.COMPLETE) {
+                    JOptionPane.showMessageDialog(this,
+                            "图片加载失败！\n请检查" + "/resources/food/" + foodName_list[food_index] + "是否存在。",
+                            "资源错误",
+                            JOptionPane.ERROR_MESSAGE);
+
+                    System.exit(1);
+                }
+            }
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(this,
+                    "奇怪的错误：" + e.toString(),
+                    "资源加载错误",
+                    JOptionPane.ERROR_MESSAGE
+                    );
+            System.exit(1);
+        }
+    }
+
     public GamePanel() {
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
 
@@ -76,7 +115,8 @@ public class GamePanel extends JPanel implements ActionListener {
 
         setFocusable(true);
 
-        loadImages();
+        loadSnackImages();
+        loadFoodImage();
         // 界面初始化（背景、监听器等）
         snake = new Snake(B_WIDTH / 2, B_HEIGHT / 2, DOT_SIZE, 'R');
         food = new Food(B_WIDTH / DOT_SIZE, B_HEIGHT / DOT_SIZE, DOT_SIZE);
@@ -102,6 +142,7 @@ public class GamePanel extends JPanel implements ActionListener {
         // TODO: 判断蛇头坐标是否与食物坐标重合
         Snake.Node head = snake.body.getFirst();
         if(head.x == food.x && head.y == food.y){
+            loadFoodImage();
             snake.grow();
             food.generate(B_WIDTH / DOT_SIZE, B_HEIGHT / DOT_SIZE, DOT_SIZE);
         }
@@ -126,6 +167,7 @@ public class GamePanel extends JPanel implements ActionListener {
             drawSnack(g2d, headImage, link.x, link.y, link.direction);
         }
         drawFood(g2d, foodImage, food);
+        System.out.println(food.x + "," + food.y);
     }
     private void drawSnack(Graphics2D g2d, Image img, int x, int y, char dir) {
         // 1. 保存当前的绘图状态
