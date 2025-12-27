@@ -10,6 +10,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private boolean inGame = true;
     private Image headImage;
     private Image foodImage;
+    private boolean canChangeDirection = true;
 
     // 常量定义
     private final int B_WIDTH = 1000;
@@ -19,6 +20,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private class TAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            if (!canChangeDirection) return;
             int key = e.getKeyCode();
 
             // 获取当前蛇的方向，防止它直接 180 度回头（比如往右走时不能直接按左）
@@ -26,18 +28,22 @@ public class GamePanel extends JPanel implements ActionListener {
 
             if ((key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) && (currentDir != 'R')) {
                 snake.snack_direction = 'L';
+                canChangeDirection = false;
             }
 
             if ((key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) && (currentDir != 'L')) {
                 snake.snack_direction = 'R';
+                canChangeDirection = false;
             }
 
             if ((key == KeyEvent.VK_UP || key == KeyEvent.VK_W) && (currentDir != 'D')) {
                 snake.snack_direction = 'U';
+                canChangeDirection = false;
             }
 
             if ((key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) && (currentDir != 'U')) {
                 snake.snack_direction = 'D';
+                canChangeDirection = false;
             }
         }
     }
@@ -80,6 +86,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(inGame) {
             checkFood();      // 调用判断逻辑
+            canChangeDirection = true;
             checkCollision(); // 调用碰撞逻辑
         }
         if (inGame) {
