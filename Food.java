@@ -12,5 +12,7 @@ public class Food {
 
     public void generate(int rangeX, int rangeY, int dotSize) {
         // TODO: 随机生成坐标，必须是 dotSize 的倍数才能对齐
+        x = random.nextInt(rangeX) * dotSize;
+        y = random.nextInt(rangeY) * dotSize;
     }
 }
