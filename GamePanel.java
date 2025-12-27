@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
         setFocusable(true);
         // 界面初始化（背景、监听器等）
-        snake = new Snake((B_WIDTH * B_HEIGHT) / (DOT_SIZE * DOT_SIZE));
+        snake = new Snake(B_WIDTH / 2, B_HEIGHT / 2, DOT_SIZE, 'R');
         food = new Food(B_WIDTH, B_HEIGHT, DOT_SIZE);
         timer = new Timer(140, this);
         timer.start();
@@ -33,7 +33,7 @@ public class GamePanel extends JPanel implements ActionListener {
             checkCollision(); // 调用碰撞逻辑
             snake.move();     // 调用移动逻辑
         }
-        repaint(); // 刷新画面喵！
+        repaint(); // 刷新画面
     }
 
     private void checkFood() {

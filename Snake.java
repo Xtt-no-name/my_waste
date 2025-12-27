@@ -13,9 +13,16 @@ public class Snake {
         }
     }
 
-    public Snake(int maxLength) {
+    List<Node> body;
+    int body_length = 0;
+
+    public Snake(int startX, int startY, int Dot_size, char startDirection) {
         // TODO: 初始化蛇的起始长度和位置
-        List<Node> body = new LinkedList<>();
+        this.body = new LinkedList<>();
+        this.body_length = 1;
+        body.add(new Node(startX, startY, startDirection));
+        body.add(new Node(startX + Dot_size, startY, startDirection));
+        body.add(new Node(startX + 2 * Dot_size, startY, startDirection));
     }
 
     public void move() {
