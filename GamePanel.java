@@ -93,12 +93,7 @@ public class GamePanel extends JPanel implements ActionListener {
             checkCollision(); // 调用碰撞逻辑
         }
         if (inGame) {
-            int oldTailX = snake.body.getLast().x;
-            int oldTailY = snake.body.getLast().y;
             snake.move();     // 调用移动逻辑
-            int newHeadX = snake.body.getFirst().x;
-            int newHeadY = snake.body.getFirst().y;
-
             repaint();
         }
     }
