@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.io.File;
+import java.net.URL;
 
 public class GamePanel extends JPanel implements ActionListener {
     private Snake snake;
@@ -50,16 +50,16 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void loadImages(){
-        File head_path = new File("resources/head.png");
-        ImageIcon iih = new ImageIcon(head_path.getAbsolutePath());
-        headImage = iih.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
+        URL head_url = getClass().getResource("/resources/head.png");
+        ImageIcon headImg = new ImageIcon(head_url);
+        headImage = headImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
-        File food_path = new File("resources/food.png");
-        ImageIcon foodImg = new ImageIcon(food_path.getAbsolutePath());
+        URL food_url = getClass().getResource("/resources/food.png");
+        ImageIcon foodImg = new ImageIcon(food_url);
         foodImage = foodImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
         // 检查图片是否加载
-        if (headImage == null || iih.getImageLoadStatus() != MediaTracker.COMPLETE) {
+        if (headImage == null || headImg.getImageLoadStatus() != MediaTracker.COMPLETE) {
             JOptionPane.showMessageDialog(this,
                     "图片加载失败！\n请检查 resources/head.png 是否存在。",
                     "资源错误",
@@ -105,7 +105,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void checkFood() {
         // TODO: 判断蛇头坐标是否与食物坐标重合
-        // 如果重合：snake.grow() 并且 food.generate()
         Snake.Node head = snake.body.getFirst();
         if(head.x == food.x && head.y == food.y){
             snake.grow();
@@ -115,9 +114,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void checkCollision() {
         // TODO: 逻辑判断
-        // 1. 撞墙判断 (x[0] < 0 等)
-        // 2. 撞到自己判断 (循环比较头部与身体坐标)
-        // 若撞到，设置 inGame = false
         int nowHeadX = snake.body.getFirst().x;
         int nowHeadY = snake.body.getFirst().y;
 
@@ -135,7 +131,6 @@ public class GamePanel extends JPanel implements ActionListener {
             drawSnack(g2d, headImage, link.x, link.y, link.direction);
         }
         drawFood(g2d, foodImage, food);
-        System.out.println(food.x + "," + food.y);
     }
     private void drawSnack(Graphics2D g2d, Image img, int x, int y, char dir) {
         // 1. 保存当前的绘图状态
