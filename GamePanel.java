@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 
 public class GamePanel extends JPanel implements ActionListener {
     private Snake snake;
@@ -49,10 +50,12 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void loadImages(){
-        ImageIcon iih = new ImageIcon("resources/head.png");
+        File head_path = new File("resources/head.png");
+        ImageIcon iih = new ImageIcon(head_path.getAbsolutePath());
         headImage = iih.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
-        ImageIcon foodImg = new ImageIcon("resources/food.png");
+        File food_path = new File("resources/food.png");
+        ImageIcon foodImg = new ImageIcon(food_path.getAbsolutePath());
         foodImage = foodImg.getImage().getScaledInstance(DOT_SIZE, DOT_SIZE, Image.SCALE_SMOOTH);
 
         // 检查图片是否加载
